@@ -19,7 +19,7 @@ public class TestDataGenerator {
     }
     public void generateTestData(int machineCount, int jobCount, int operationsPerJob, Random random) {
         rand = random;
-        generateTestData(machineCount, jobCount, operationsPerJob);
+        generateTestData(machineCount, jobCount, random.nextInt(operationsPerJob) + 1); // Random operations per job
     }
 
     private ArrayList<Machine> generateMachines(int machineCount) {

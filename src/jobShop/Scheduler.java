@@ -95,10 +95,10 @@ public class Scheduler {
     }
 
     private void executeOperation(Operation operation, Machine machine) {
-        System.out.println("Executing operation " + operation.getId() + " on machine " + machine.getId());
+        //System.out.println("Executing operation " + operation.getId() + " on machine " + machine.getId());
         machine.setAvailable(false);
         machine.setRemainingTime(operation.getProcessingTime());
-        System.out.println("Scheduled operation " + operation.getId() + " on machine " + machine.getName() + " for " + operation.getProcessingTime() + " units.");
+        //System.out.println("Scheduled operation " + operation.getId() + " on machine " + machine.getName() + " for " + operation.getProcessingTime() + " units.");
     }
 
     public boolean isJobCompleted(Job job) {
