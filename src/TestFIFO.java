@@ -4,12 +4,15 @@ import jobShop.Scheduler;
 import helpers.TestDataGenerator;
 
 import java.util.ArrayList;
+import java.util.Random;
 
-public class JobShopSchedulerClient {
+public class TestFIFO {
+
+    private static final Random random = new Random(3434);
     public static void main(String[] args) {
         // Generiere Testdaten
         TestDataGenerator generator = new TestDataGenerator();
-        generator.generateTestData(5, 100, 5,555555); // 5 Maschinen, 10 Jobs, 5 Operationen pro JobShop.Job
+        generator.generateTestData(5, 100, 5,random); // 5 Maschinen, 10 Jobs, 5 Operationen pro JobShop.Job
 
         ArrayList<Job> jobs = generator.getJobs();
         ArrayList<Machine> machines = generator.getMachines();

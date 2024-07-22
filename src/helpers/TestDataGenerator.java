@@ -17,8 +17,8 @@ public class TestDataGenerator {
         machines = generateMachines(machineCount);
         jobs = generateJobs(jobCount, operationsPerJob, machines);
     }
-    public void generateTestData(int machineCount, int jobCount, int operationsPerJob, int seed) {
-        rand = new Random(seed);
+    public void generateTestData(int machineCount, int jobCount, int operationsPerJob, Random random) {
+        rand = random;
         generateTestData(machineCount, jobCount, operationsPerJob);
     }
 

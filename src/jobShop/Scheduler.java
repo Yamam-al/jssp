@@ -6,6 +6,7 @@ import java.util.Queue;
 
 public class Scheduler {
     private ArrayList<Job> jobs;
+    private ArrayList<Machine> machines;
     private ArrayList<Machine> availableMachines;
     private ArrayList<Machine> usedMachines;
     private Queue<Operation> operationQueue;
@@ -15,6 +16,7 @@ public class Scheduler {
 
     public Scheduler(ArrayList<Job> jobs, ArrayList<Machine> machines) {
         this.jobs = jobs;
+        this.machines = machines;
         this.availableMachines = new ArrayList<>(machines);
         this.usedMachines = new ArrayList<>();
         this.operationQueue = new LinkedList<>();
@@ -22,12 +24,22 @@ public class Scheduler {
     }
 
     private void initializeOperationQueue() {
+    // FIFO Queue für die Operationen (initialer Aufbau)
         for (Job job : jobs) {
             for (Operation operation : job.getOperations()) {
                 operationQueue.add(operation);
             }
         }
     }
+    // Initiale Methode zur Bestimmung der Reihenfolge der Operationen
+    public void initializeOperationQueue(ArrayList<Operation> operations) {
+        this.operationQueue = new LinkedList<>(operations);
+    }
+    public void schedule(ArrayList<Operation> operations) {
+        this.operationQueue = new LinkedList<>(operations);
+        schedule();
+    }
+
 
     // Methode zum Planen und Ausführen der Operationen
     public void schedule() {
@@ -113,5 +125,17 @@ public class Scheduler {
 
     public int getWastedTime() {
         return wastedTime;
+    }
+
+    public ArrayList<Job> getJobs() {
+        return jobs;
+    }
+
+    public ArrayList<Machine> getMachines() {
+        return machines;
+    }
+
+    public ArrayList<Operation> getOperations() {
+        return new ArrayList<>(operationQueue);
     }
 }
