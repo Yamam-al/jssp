@@ -41,8 +41,7 @@ public class TestGA {
 
         // Beste Lösung finden
         Chromosome bestChromosome = ga.getBestChromosome();
-        scheduler.initializeOperationQueue(bestChromosome.getGenes());
-        scheduler.schedule();
+        scheduler.schedule(bestChromosome.getGenes());
 
         // Überprüfe, ob alle Jobs abgeschlossen sind
         if (scheduler.isAllJobsCompleted()) {

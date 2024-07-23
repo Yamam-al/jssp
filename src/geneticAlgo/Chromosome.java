@@ -28,7 +28,7 @@ public class Chromosome {
 
     public void calculateFitness(Scheduler scheduler, double weightScheduledTime, double weightWastedTime) {
         Scheduler tempScheduler = new Scheduler(new ArrayList<>(scheduler.getJobs()), scheduler.getMachines());
-        tempScheduler.initializeOperationQueue(this.genes);
+        tempScheduler.schedule(this.genes);
         tempScheduler.schedule();
         int scheduledOperatingTime = tempScheduler.getScheduledOperatingTime();
         int wastedTime = tempScheduler.getWastedTime();

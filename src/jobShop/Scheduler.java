@@ -26,15 +26,10 @@ public class Scheduler {
     private void initializeOperationQueue() {
     // FIFO Queue für die Operationen (initialer Aufbau)
         for (Job job : jobs) {
-            for (Operation operation : job.getOperations()) {
-                operationQueue.add(operation);
-            }
+            operationQueue.addAll(job.getOperations());
         }
     }
-    // Initiale Methode zur Bestimmung der Reihenfolge der Operationen
-    public void initializeOperationQueue(ArrayList<Operation> operations) {
-        this.operationQueue = new LinkedList<>(operations);
-    }
+
     public void schedule(ArrayList<Operation> operations) {
         this.operationQueue = new LinkedList<>(operations);
         schedule();
