@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class TestGA {
-    private static final Random random = new Random(1234);
+    private static final Random random = new Random(875);
     public static void main(String[] args) {
         // Generiere Testdaten
         TestDataGenerator generator = new TestDataGenerator();
@@ -29,7 +29,7 @@ public class TestGA {
         // Initialisiere den genetischen Algorithmus
         double weightScheduledTime = 0.7;
         double weightWastedTime = 0.3;
-        GeneticAlgorithm ga = new GeneticAlgorithm(50, 0.95, 0.01, 5, operations, weightScheduledTime, weightWastedTime, random);
+        GeneticAlgorithm ga = new GeneticAlgorithm(50, 0.7, 10, operations, weightScheduledTime, weightWastedTime, random);
 
         // Evolviere die Population über mehrere Generationen
         int generationCount = 100;

@@ -1,5 +1,6 @@
 package geneticAlgo;
 
+import jobShop.Job;
 import jobShop.Operation;
 import jobShop.Scheduler;
 
@@ -22,17 +23,29 @@ public class Chromosome {
         return fitness;
     }
 
-    public void setFitness(double fitness) {
-        this.fitness = fitness;
-    }
-
     public void calculateFitness(Scheduler scheduler, double weightScheduledTime, double weightWastedTime) {
         Scheduler tempScheduler = new Scheduler(new ArrayList<>(scheduler.getJobs()), scheduler.getMachines());
         tempScheduler.schedule(this.genes);
-        tempScheduler.schedule();
+
         int scheduledOperatingTime = tempScheduler.getScheduledOperatingTime();
         int wastedTime = tempScheduler.getWastedTime();
-        this.fitness = weightScheduledTime * scheduledOperatingTime + weightWastedTime * wastedTime;
+        int totalJobs = scheduler.getJobs().size();
+        int completedJobs = (int) scheduler.getJobs().stream().filter(Job::isCompleted).count();
+
+        // Normiere die Werte
+        double normalizedScheduledTime = scheduledOperatingTime / (double) (scheduledOperatingTime + wastedTime);
+        double normalizedWastedTime = wastedTime / (double) (scheduledOperatingTime + wastedTime);
+
+        // Berechne die Fitness
+        // Hier sorgen wir dafür, dass die Fitness positiv ist und höhere Werte besser sind
+        this.fitness = (weightScheduledTime * (1 - normalizedScheduledTime)) + (weightWastedTime * (1 - normalizedWastedTime));
+
+        // Optional: Belohnen Sie abgeschlossene Jobs
+        this.fitness += completedJobs / (double) totalJobs;
+
+        System.out.println("Fitness: " + this.fitness);
     }
+
+
 }
 

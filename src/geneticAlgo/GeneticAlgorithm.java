@@ -5,11 +5,11 @@ import jobShop.Scheduler;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Random;
 
 public class GeneticAlgorithm {
     private Population population;
-    private double crossoverRate;
     private double mutationRate;
     private int elitismCount;
     private Random random;
@@ -17,8 +17,7 @@ public class GeneticAlgorithm {
     private double weightScheduledTime;
     private double weightWastedTime;
 
-    public GeneticAlgorithm(int populationSize, double crossoverRate, double mutationRate, int elitismCount, ArrayList<Operation> operations, double weightScheduledTime, double weightWastedTime, Random random) {
-        this.crossoverRate = crossoverRate;
+    public GeneticAlgorithm(int populationSize, double mutationRate, int elitismCount, ArrayList<Operation> operations, double weightScheduledTime, double weightWastedTime, Random random) {
         this.mutationRate = mutationRate;
         this.elitismCount = elitismCount;
         this.populationSize = populationSize;
@@ -43,7 +42,7 @@ public class GeneticAlgorithm {
         for (int i = elitismCount; i < population.getChromosomes().size(); i++) {
             Chromosome parent1 = selectParent();
             Chromosome parent2 = selectParent();
-            Chromosome offspring = crossover(parent1, parent2);
+            Chromosome offspring = orderCrossover(parent1, parent2);
             newPopulation.getChromosomes().set(i, offspring);
         }
 
@@ -56,9 +55,14 @@ public class GeneticAlgorithm {
     }
 
     private Chromosome selectParent() {
-        // Implementiere ein Auswahlverfahren wie Turnierauswahl
-        // Einfachheitshalber wählen wir zufällig
-        return population.getChromosomes().get(random.nextInt(population.getChromosomes().size()));
+        // Turnierauswahl
+        int tournamentSize = 5; // Beispielgröße für das Turnier
+        ArrayList<Chromosome> tournament = new ArrayList<>();
+        for (int i = 0; i < tournamentSize; i++) {
+            Chromosome randomChromosome = population.getChromosomes().get(random.nextInt(population.getChromosomes().size()));
+            tournament.add(randomChromosome);
+        }
+        return tournament.stream().min(Comparator.comparingDouble(Chromosome::getFitness)).orElse(null);
     }
 
     private Chromosome crossover(Chromosome parent1, Chromosome parent2) {
@@ -75,21 +79,65 @@ public class GeneticAlgorithm {
         return new Chromosome(offspringGenes);
     }
 
+    public Chromosome orderCrossover(Chromosome parent1, Chromosome parent2) {
+        ArrayList<Operation> genes = parent1.getGenes();
+        int chromosomeLength = genes.size();
+        Chromosome offspring = new Chromosome(new ArrayList<>(genes));
+
+
+        // Select two random crossover points
+        int startPos = random.nextInt(chromosomeLength);
+        int endPos = random.nextInt(chromosomeLength);
+
+        // Ensure startPos is less than endPos
+        if (startPos > endPos) {
+            int temp = startPos;
+            startPos = endPos;
+            endPos = temp;
+        }
+
+        // Copy the segment from parent1 to offspring
+        for (int i = startPos; i <= endPos; i++) {
+            offspring.getGenes().set(i, parent1.getGenes().get(i));
+        }
+
+        // Fill the remaining genes from parent2 while maintaining job order
+        int currentPos = (endPos + 1) % chromosomeLength;
+        for (int i = 0; i < chromosomeLength; i++) {
+            Operation parent2Gene = parent2.getGenes().get((endPos + 1 + i) % chromosomeLength);
+            if (!offspring.getGenes().contains(parent2Gene)) {
+                offspring.getGenes().set(currentPos, parent2Gene);
+                currentPos = (currentPos + 1) % chromosomeLength;
+            }
+        }
+
+        return offspring;
+    }
+
+
     private void mutate(Chromosome chromosome) {
-        // Einfache Mutationsimplementierung: Zwei Gene vertauschen
-        for (int i = 0; i < chromosome.getGenes().size(); i++) {
-            if (random.nextDouble() < mutationRate) {
-                int j = random.nextInt(chromosome.getGenes().size());
-                Collections.swap(chromosome.getGenes(), i, j);
+        // Inversion mutation
+        if (random.nextDouble() < mutationRate) {
+            int length = chromosome.getGenes().size();
+            int start = random.nextInt(length);
+            int end = random.nextInt(length - start) + start;
+
+            // Reverse the order of the genes in the selected segment
+            ArrayList<Operation> genes = chromosome.getGenes();
+            while (start < end) {
+                Collections.swap(genes, start, end);
+                start++;
+                end--;
             }
         }
     }
 
+
     public Chromosome getBestChromosome() {
-        double bestFitness = Double.MAX_VALUE;
+        double bestFitness = 0;
         Chromosome bestChromosome = null;
         for (Chromosome chromosome : population.getChromosomes()) {
-            if (chromosome.getFitness() < bestFitness) {
+            if (chromosome.getFitness() > bestFitness) {
                 bestFitness = chromosome.getFitness();
                 bestChromosome = chromosome;
             }

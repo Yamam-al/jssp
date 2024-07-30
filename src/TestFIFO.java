@@ -9,7 +9,7 @@ import java.util.Random;
 
 public class TestFIFO {
 
-    private static final Random random = new Random(1234);
+    private static final Random random = new Random(875);
 
     public static void main(String[] args) {
         // Generiere Testdaten
@@ -24,7 +24,7 @@ public class TestFIFO {
         }
 
 
-        // Initialisiere den JobShop.Scheduler
+        // Initialisiere den JobShop Scheduler
         Scheduler scheduler = new Scheduler(jobs, machines);
 
         // Plane die Operationen
