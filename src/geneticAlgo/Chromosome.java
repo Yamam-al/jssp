@@ -40,9 +40,13 @@ public class Chromosome {
         // Hier sorgen wir dafür, dass die Fitness positiv ist und höhere Werte besser sind
         this.fitness = (weightScheduledTime * (1 - normalizedScheduledTime)) + (weightWastedTime * (1 - normalizedWastedTime));
 
-        // Optional: Belohnen Sie abgeschlossene Jobs
+        // Belohnen abgeschlossene Jobs
         this.fitness += completedJobs / (double) totalJobs;
 
+        // Um sicherzustellen, dass die Fitness nicht negativ ist
+        if (this.fitness < 0) {
+            this.fitness = 0;
+        }
         System.out.println("Fitness: " + this.fitness);
     }
 

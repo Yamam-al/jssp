@@ -3,10 +3,7 @@ package geneticAlgo;
 import jobShop.Operation;
 import jobShop.Scheduler;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Random;
+import java.util.*;
 
 public class GeneticAlgorithm {
     private Population population;
@@ -80,37 +77,28 @@ public class GeneticAlgorithm {
     }
 
     public Chromosome orderCrossover(Chromosome parent1, Chromosome parent2) {
-        ArrayList<Operation> genes = parent1.getGenes();
-        int chromosomeLength = genes.size();
-        Chromosome offspring = new Chromosome(new ArrayList<>(genes));
+        ArrayList<Operation> offspringGenes = new ArrayList<>(Collections.nCopies(parent1.getGenes().size(), null));
 
+        int start = random.nextInt(parent1.getGenes().size());
+        int end = random.nextInt(parent1.getGenes().size() - start) + start;
 
-        // Select two random crossover points
-        int startPos = random.nextInt(chromosomeLength);
-        int endPos = random.nextInt(chromosomeLength);
-
-        // Ensure startPos is less than endPos
-        if (startPos > endPos) {
-            int temp = startPos;
-            startPos = endPos;
-            endPos = temp;
+        for (int i = start; i <= end; i++) {
+            offspringGenes.set(i, parent1.getGenes().get(i));
         }
 
-        // Copy the segment from parent1 to offspring
-        for (int i = startPos; i <= endPos; i++) {
-            offspring.getGenes().set(i, parent1.getGenes().get(i));
-        }
-
-        // Fill the remaining genes from parent2 while maintaining job order
-        int currentPos = (endPos + 1) % chromosomeLength;
-        for (int i = 0; i < chromosomeLength; i++) {
-            Operation parent2Gene = parent2.getGenes().get((endPos + 1 + i) % chromosomeLength);
-            if (!offspring.getGenes().contains(parent2Gene)) {
-                offspring.getGenes().set(currentPos, parent2Gene);
-                currentPos = (currentPos + 1) % chromosomeLength;
+        int currentIndex = (end + 1) % parent2.getGenes().size();
+        HashSet<Operation> subSegment = new HashSet<>(offspringGenes.subList(start, end + 1));
+        for (int i = 0; i < parent2.getGenes().size(); i++) {
+            int parent2Index = (end + 1 + i) % parent2.getGenes().size();
+            Operation gene = parent2.getGenes().get(parent2Index);
+            if (!subSegment.contains(gene)) {
+                offspringGenes.set(currentIndex, gene);
+                currentIndex = (currentIndex + 1) % parent2.getGenes().size();
             }
         }
 
+        Chromosome offspring = new Chromosome(offspringGenes);
+        System.out.println("Crossover result: " + offspring.getGenes());
         return offspring;
     }
 
@@ -129,6 +117,7 @@ public class GeneticAlgorithm {
                 start++;
                 end--;
             }
+            System.out.println("Mutation result: " + genes);
         }
     }
 

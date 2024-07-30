@@ -24,9 +24,14 @@ public class Population {
 
     private void initializePopulation(ArrayList<Operation> operations, Random random) {
         for (int i = 0; i < populationSize; i++) {
-            Collections.shuffle(operations, random);
-            Chromosome newChromosome = new Chromosome(new ArrayList<>(operations));
+            ArrayList<Operation> genes = new ArrayList<>(operations);
+            Collections.shuffle(genes, random);
+            Chromosome newChromosome = new Chromosome(genes);
             chromosomes.set(i, newChromosome);
+        }
+        System.out.println("Initial population:");
+        for (Chromosome chromosome : chromosomes) {
+            System.out.println(chromosome.getGenes());
         }
     }
 

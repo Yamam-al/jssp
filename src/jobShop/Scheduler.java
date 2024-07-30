@@ -24,7 +24,7 @@ public class Scheduler {
     }
 
     private void initializeOperationQueue() {
-    // FIFO Queue für die Operationen (initialer Aufbau)
+        // FIFO Queue für die Operationen (initialer Aufbau)
         for (Job job : jobs) {
             operationQueue.addAll(job.getOperations());
         }
@@ -131,6 +131,11 @@ public class Scheduler {
     }
 
     public ArrayList<Operation> getOperations() {
-        return new ArrayList<>(operationQueue);
+        ArrayList<Operation> operations = new ArrayList<>();
+        for (Job job : jobs) {
+            operations.addAll(job.getOperations());
+        }
+        return operations;
     }
 }
+
